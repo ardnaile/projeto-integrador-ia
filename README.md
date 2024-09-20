@@ -17,7 +17,9 @@ Dificuldade em gerar ideias e roteiros quando o cliente chega com poucas informa
 Ferramenta web que utiliza IA para ajudar agentes de viagem a criar itinerários personalizados com sugestões de destinos, atividades, acomodações e dicas exclusivas. 
 
 ### Fluxo do sistema
-O sistema contará com um [fluxo](https://www.figma.com/board/oUjGWXQjQyHg4lsFoYm9Xh/projeto-integrador-ia-fluxo?node-id=0-1&t=8nsRSfHOvmBapnRh-1) simples que está desenhado no FigJam.
+O sistema contará com um fluxo simples conforme a imagem abaixo.
+![image](https://github.com/user-attachments/assets/5138b31d-f24c-4175-b83f-49c44acfb078)
+Os usuários e as agências serão cadastrados internamente, por isso já inicia com o login.
 
 ### Protótipo
 O [protótipo](https://www.figma.com/design/F1GwuW1vkJ7PzmWurU243I/projeto-integrador-ia?node-id=0-1&t=lzzX7vj8duGQ8Tsv-0) está sendo feito no Figma. A princípio tinha sido pensada uma solução mobile first, porém em conversa com o cliente, vimos que a necessidade maior é poder utilizar a aplicação no pc.
