@@ -9,7 +9,6 @@ Projeto integrador de inteligência artificial.
 
 ### Cliente
 A [Tahiti Viagens & Turismo](https://www.instagram.com/tahiti_viagens/) será cliente do projeto, testando ao longo do desenvolvimento e utilizando a ferramenta quando ela estiver pronta.
-![image](https://github.com/user-attachments/assets/d10ba3bc-11a5-4f2f-98e4-2b39d13956e7)
 
 ### Problema
 Dificuldade em gerar ideias e roteiros quando o cliente chega com poucas informações sobre a viagem que pretende fazer.
