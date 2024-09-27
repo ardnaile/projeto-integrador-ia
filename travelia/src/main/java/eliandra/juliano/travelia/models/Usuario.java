@@ -1,17 +1,25 @@
 package eliandra.juliano.travelia.models;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 import java.util.UUID;
 
-public class Usuario {
-
+@Document(collection = "Usuario")
+public class Usuario implements UserDetails {
+    @MongoId
     private UUID idEstudante;
-    private String nome_usuario;
+    private String usuario;
     private String email;
     private String senha;
     private String id_agencia;
 
-    public Usuario(String nome_usuario, String email, String senha, String id_agencia) {
-        this.nome_usuario = nome_usuario;
+    public Usuario(String usuario, String email, String senha, String id_agencia) {
+        this.usuario = usuario;
         this.email = email;
         this.senha = senha;
         this.id_agencia = id_agencia;
@@ -25,12 +33,12 @@ public class Usuario {
         this.idEstudante = idEstudante;
     }
 
-    public String getNome_usuario() {
-        return nome_usuario;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setNome_usuario(String nome_usuario) {
-        this.nome_usuario = nome_usuario;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     public String getEmail() {
@@ -56,5 +64,28 @@ public class Usuario {
     public void setId_agencia(String id_agencia) {
         this.id_agencia = id_agencia;
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    // Métodos User Details
+    @Override
+    public String getPassword(){
+        return this.senha;
+    }
+    @Override
+    public static String getUsername(){
+        return this.usuario;
+    }
+    @Override
+    public boolean isAccountNonExpired() { return true; }
+    @Override
+    public boolean isAccountNonLocked() { return true; }
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
+    @Override
+    public boolean isEnabled() { return true; }
 }
 
