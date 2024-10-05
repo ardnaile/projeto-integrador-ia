@@ -24,7 +24,12 @@ public class Usuario implements UserDetails {
         this.senha = senha;
         this.id_agencia = id_agencia;
     }
-// Getters e Setters
+
+    public Usuario() {
+
+    }
+
+    // Getters e Setters
     public UUID getIdEstudante() {
         return idEstudante;
     }
@@ -76,7 +81,7 @@ public class Usuario implements UserDetails {
         return this.senha;
     }
     @Override
-    public static String getUsername(){
+    public String getUsername(){
         return this.usuario;
     }
     @Override

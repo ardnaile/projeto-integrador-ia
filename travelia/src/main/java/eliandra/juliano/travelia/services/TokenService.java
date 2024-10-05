@@ -3,6 +3,7 @@ package eliandra.juliano.travelia.services;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import eliandra.juliano.travelia.models.Usuario;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,14 +24,16 @@ public class TokenService {
     // por quanto tempo será válido o token
     @Value("${api.security.token.expiration-minutes}")
     private long expirationMinutes;
-    public String generateToken(String usuario) {
+
+
+    public String generateToken(Usuario usuario) {
         Algorithm algorithm = Algorithm.HMAC512(this.secret);
         Instant issuedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS);
         Instant expiration = issuedAt.plus(expirationMinutes, ChronoUnit.MINUTES);
         try {
             String token = JWT.create()
                     .withIssuer(this.issuer)
-                    .withSubject(Usuario.getUsername())
+                    .withSubject(usuario.getUsuario())
                     .withIssuedAt(issuedAt)
                     .withExpiresAt(expiration)
                     .sign(algorithm);
@@ -39,5 +42,19 @@ public class TokenService {
             throw new RuntimeException("Error while generating the JWT token");
         }
     }
-    public String validateToken(String token) {}
+    public String validateToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC512(this.secret);
+            String username = JWT
+                    .require(algorithm)
+                    .withIssuer(this.issuer)
+                    .build()
+                    .verify(token)
+                    .getSubject();
+            return username;
+        } catch (JWTDecodeException exception){
+            throw new RuntimeException("Erro ao decodificar o token JWT");
+        }
+    }
 }
+
