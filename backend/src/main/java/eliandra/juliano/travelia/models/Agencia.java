@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class Agencia {
 
-    private UUID id_agencia;
+    private UUID idAgencia;
     private String nome;
     private String email;
     private String logo;
@@ -15,12 +15,12 @@ public class Agencia {
         this.logo = logo;
     }
 
-    public UUID getId_agencia() {
-        return id_agencia;
+    public UUID getIdAgencia() {
+        return idAgencia;
     }
 
-    public void setId_agencia(UUID id_agencia) {
-        this.id_agencia = id_agencia;
+    public void setIdAgencia(UUID idAgencia) {
+        this.idAgencia = idAgencia;
     }
 
     public String getNome() {
