@@ -1,12 +1,17 @@
 package JulianoEliandra.TravelAi.services;
 
+import JulianoEliandra.TravelAi.dtos.ItinerarioDto;
+import JulianoEliandra.TravelAi.models.Dica;
 import JulianoEliandra.TravelAi.models.Prompt;
 import JulianoEliandra.TravelAi.models.Roteiro;
+import JulianoEliandra.TravelAi.repositories.DicaRepository;
 import JulianoEliandra.TravelAi.repositories.RoteiroRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import java.io.FileNotFoundException;
 import java.util.NoSuchElementException;
 
 @Service
@@ -14,11 +19,24 @@ public class RoteiroService {
     @Autowired
     RoteiroRepository roteiroRepository;
 
-    // Validamos o que o usuário enviou e colocamos valores default se tiver algo null
+    @Autowired
+    DicaRepository dicaRepository;
+
+    @Autowired
+    DocumentoService documentoService;
+
+    @Autowired
+    EmailService emailService;
 
     public Prompt validarPrompt(Prompt prompt){
+
+        // Validamos o que o usuário enviou e colocamos valores default se tiver algo null
+
         if (prompt.getTitulo() == null || prompt.getTitulo().isEmpty()) {
             prompt.setTitulo("Roteiro Padrão");
+        }
+        if (prompt.getDestino() == null || prompt.getDestino().isEmpty()) {
+            prompt.setDestino("Destino Padrão");
         }
         if (prompt.getAtividades() == null || prompt.getAtividades().isEmpty()) {
             prompt.setAtividades("Atividades de exemplo: passeio pela cidade, trilhas.");
@@ -32,8 +50,12 @@ public class RoteiroService {
         if (prompt.getGastronomia() == null || prompt.getGastronomia().isEmpty()) {
             prompt.setGastronomia("Gastronomia local: pratos típicos da região.");
         }
+        if (prompt.getOrcamento() == null || prompt.getOrcamento().isEmpty()) {
+            prompt.setOrcamento("Orçamento médio.");
+        }
 
         // Validação das datas
+
         if (prompt.getDt_inicio() == null) {
             throw new IllegalArgumentException("A data de início não pode ser nula.");
         }
@@ -42,17 +64,16 @@ public class RoteiroService {
         }
 
         return prompt;
-        // retornamos um prompt, que é um json com titulo, atividade, acomodacao,
-        // transporte, gastronomia e datas
     }
 
-    public Roteiro gerarNovoRoteiro(Prompt prompt) {
+    public Roteiro gerarRoteiro(Prompt prompt) {
 
         // Aqui o prompt validado será passado para o ChatGPT gerar o roteiro
 
         // Aqui está sendo gerado um roteiro padrão para exemplo
         Roteiro roteiro = new Roteiro(
                 "Roteiro de Viagem Padrão",
+                "Destino padrão",
                 null,
                 "Visita a pontos turísticos, passeios de barco, e degustação de comidas locais.",
                 "Hotel Padrão",
@@ -62,40 +83,55 @@ public class RoteiroService {
                 prompt.getDt_fim()
         );
 
+        return roteiro; // retorna para a tela de edição
+    }
 
-        // Salvar o roteiro no banco de dados
+    public Dica gerarDica(Prompt prompt, Roteiro roteiro){
+
+        // No momento de gerar o roteiro, também vamos rodar essa função e gerar as dicas com base no prompt
+
+        Dica dica = new Dica(
+                String.valueOf(roteiro.getIdRoteiro()),
+                "teste",
+                "teste",
+                "teste",
+                "teste",
+                "teste",
+                "teste",
+                "teste"
+        );
+
+        return dica;
+    }
+
+    // Ao apertar o botão salvar:
+
+    public ItinerarioDto salvarRoteiroDica(Roteiro roteiro, Dica dica){
         Roteiro roteiroSalvo = roteiroRepository.save(roteiro);
 
-        // Retornar o roteiro salvo
-        return roteiroSalvo;
+        // setamos o id do roteiro dentro de dica
+        dica.setIdRoteiro(String.valueOf(roteiroSalvo.getIdRoteiro()));
+
+        // e aí sim salva
+        Dica dicaSalva = dicaRepository.save(dica);
+        return new ItinerarioDto(roteiroSalvo, dicaSalva);
     }
 
-    // Editar roteiro existente
+//    Esse método retorna os dois juntos assim:
+//    {
+//        "roteiro": {
+//        // campos do roteiro
+//    },
+//        "dica": {
+//        // campos da dica
+//    }
+//    }
+//    Retorna para jogar na tela de roteiro pronto
 
-    public Roteiro editarRoteiro(ObjectId idRoteiro, Roteiro novoRoteiro) {
+    // EDITAR ROTEIRO EXISTENTE
 
-        // Busca o roteiro pelo id
-        Roteiro roteiro = roteiroRepository.findByIdRoteiro(idRoteiro);
 
-        if (roteiro != null) {
-            // Atualiza os campos com os novos valores, se fornecidos
-            roteiro.setTitulo(novoRoteiro.getTitulo() != null ? novoRoteiro.getTitulo() : roteiro.getTitulo());
-            roteiro.setAtividades(novoRoteiro.getAtividades() != null ? novoRoteiro.getAtividades() : roteiro.getAtividades());
-            roteiro.setAcomodacao(novoRoteiro.getAcomodacao() != null ? novoRoteiro.getAcomodacao() : roteiro.getAcomodacao());
-            roteiro.setTransporte(novoRoteiro.getTransporte() != null ? novoRoteiro.getTransporte() : roteiro.getTransporte());
-            roteiro.setGastronomia(novoRoteiro.getGastronomia() != null ? novoRoteiro.getGastronomia() : roteiro.getGastronomia());
-            roteiro.setDt_inicio(novoRoteiro.getDt_inicio() != null ? novoRoteiro.getDt_inicio() : roteiro.getDt_inicio());
-            roteiro.setDt_fim(novoRoteiro.getDt_fim() != null ? novoRoteiro.getDt_fim() : roteiro.getDt_fim());
-
-            // Retorna o roteiro atualizado (simulando um retorno do banco de dados)
-            return roteiro;
-        } else {
-            // Caso o roteiro não seja encontrado
-            throw new NoSuchElementException("Roteiro não encontrado.");
-        }
-    }
-
-    // Excluir roteiro
+    // EXCLUIR ROTEIRO
     public void excluirRoteiro(ObjectId idRoteiro) {
         // Verifica se o roteiro existe
         if (roteiroRepository.existsById(String.valueOf(idRoteiro))) {
@@ -107,5 +143,15 @@ public class RoteiroService {
         }
     }
 
-    // Enviar roteiro
+    // PDF e Envio
+    // Passar um id???
+    public void gerarPdfEmail(Roteiro roteiro, Dica dica, String emailCliente) throws FileNotFoundException, MessagingException {
+        // Gerar o PDF
+        String caminhoArquivo = documentoService.gerarPdfRoteiroEDicas(roteiro, dica);
+
+        // Enviar o PDF por e-mail
+        String assunto = "Seu Roteiro de Viagem e Dicas!";
+        String corpo = "Olá, segue em anexo o seu roteiro de viagem e dicas personalizadas.";
+        emailService.enviarEmailComAnexo(emailCliente, assunto, corpo, caminhoArquivo);
+    }
 }

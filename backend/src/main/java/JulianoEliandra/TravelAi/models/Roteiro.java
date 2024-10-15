@@ -12,6 +12,7 @@ public class Roteiro {
     @MongoId
     private ObjectId idRoteiro;
     private String titulo;
+    private String destino;
     private String idUsuario; // autor
     private String atividades;
     private String acomodacao;
@@ -20,8 +21,9 @@ public class Roteiro {
     private Date dt_inicio;
     private Date dt_fim;
 
-    public Roteiro(String titulo, String idUsuario, String atividades, String acomodacao, String transporte, String gastronomia, Date dt_inicio, Date dt_fim) {
+    public Roteiro(String titulo, String destino, String idUsuario, String atividades, String acomodacao, String transporte, String gastronomia, Date dt_inicio, Date dt_fim) {
         this.titulo = titulo;
+        this.destino = destino;
         this.idUsuario = idUsuario;
         this.atividades = atividades;
         this.acomodacao = acomodacao;
@@ -45,6 +47,14 @@ public class Roteiro {
 
     public void setTitulo(String titulo) {
         this.titulo = titulo;
+    }
+
+    public String getDestino() {
+        return destino;
+    }
+
+    public void setDestino(String destino) {
+        this.destino = destino;
     }
 
     public String getIdUsuario() {
