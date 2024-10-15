@@ -1,6 +1,8 @@
-## Assistente de viagens com IA
+# Assistente de viagens com IA
 
-Projeto integrador de inteligência artificial.
+Projeto integrador de inteligência artificial na Unisatc.
+
+## Descrição do projeto
 
 ### Integrantes
 
@@ -27,5 +29,128 @@ O [protótipo](https://www.figma.com/design/F1GwuW1vkJ7PzmWurU243I/projeto-integ
 ### Modelagem dos dados
 A [modelagem dos dados](https://dbdiagram.io/d/modelagem-projeto-ia-66d257a6eef7e08f0e47324e) está sendo feita no dbdiagram.io. Será utilizado um banco noSQL para armazenar e gerenciar os dados da aplicação.
 
+---
+## Requisições
 
-Mais informações conforme andamento do projeto!
+### `POST` /agencia/register
+Registro de agências de viagem, não será implementado formulário no Front-end.
+
+Exemplo de corpo da requisição em formato JSON (a logo está sendo salva como string de forma provisória):
+```
+{
+	"nome": "teste1",
+	"email": "teste1@email.com",
+	"logo": "teste1"
+}
+```
+
+Retorno:
+ok: retorna o id da agência
+bad request: mensagem de dados faltantes
+internal server error: erro ao registrar agência + mensagem de erro
+
+### `POST` /usuario/register
+Registro de usuários, só é possível registrar usuários com uma agência existente.
+
+Exemplo de corpo da requisição em formato JSON:
+```
+{
+	"nomeUsuario": "teste1",
+	"email": "teste1@email.com",
+	"senha": "teste1",
+	"idAgencia": "670d7490aa23a06753c17dc5"
+}
+```
+
+Retorno:
+ok: retorna o nome do usuário
+bad request: caso a agência informada não exista no banco
+internal server error: erro ao registrar usuário + mensagem de erro
+
+### `POST` /usuario/login
+Login de usuário por enquanto sem camada de segurança e autorização de rotas.
+
+Exemplo de corpo da requisição em formato JSON:
+```
+{
+	"nomeUsuario": "teste1",
+	"senha": "teste1"
+}
+```
+
+Retorno:
+ok: Login successful!
+unauthorized: Invalid credentials
+
+### `POST` /roteiro/gerar
+Gera um roteiro e dicas com base em inputs coleados do Front-end. Posteriormente, será gerado com IA.
+
+Exemplo de corpo da requisição em formato JSON. O usuário pode deixar os inputs em branco, caso queira, como é o caso desse exemplo. Os únicos campos que são obrigatórios são as datas:
+```
+{
+	"titulo": "TESTE",
+  "dt_inicio": "2024-11-01T00:00:00Z",
+	"dt_fim": "2024-11-01T00:00:00Z"
+}
+```
+Retorna um JSON com o roteiro e a dica, ainda não salvos no banco de dados. Eles vão para uma tela de edição primeiro.
+```
+{
+	"roteiro": {
+		"idRoteiro": null,
+		"titulo": "Roteiro de Viagem Padrão",
+		"destino": "Destino padrão",
+		"idUsuario": null,
+		"atividades": "Visita a pontos turísticos, passeios de barco, e degustação de comidas locais.",
+		"acomodacao": "Hotel Padrão",
+		"transporte": "Ônibus turístico",
+		"gastronomia": "Culinária local e restaurantes recomendados",
+		"dt_inicio": "2024-11-01T00:00:00.000+00:00",
+		"dt_fim": "2024-11-01T00:00:00.000+00:00"
+	},
+	"dica": {
+		"idDica": null,
+		"idRoteiro": "null",
+		"bagagem": "teste",
+		"saude": "teste",
+		"costumes": "teste",
+		"moeda": "teste",
+		"idioma": "teste",
+		"documentos": "teste",
+		"clima": "teste"
+	}
+}
+```
+### `POST` /roteiro/salvar
+Após fazer as alterações necessárias e ao clicar no botão de salvar na tela de edição, os dados são salvos no banco de dados.
+
+Exemplo de corpo da requisição em formato JSON:
+```
+{
+	"roteiro": {
+		"idRoteiro": null,
+		"titulo": "Roteiro de Viagem Padrão",
+		"destino": "Destino padrão",
+		"idUsuario": null,
+		"atividades": "Visita a pontos turísticos, passeios de barco, e degustação de comidas locais.",
+		"acomodacao": "Hotel Padrão",
+		"transporte": "Ônibus turístico",
+		"gastronomia": "Culinária local e restaurantes recomendados",
+		"dt_inicio": "2024-11-01T00:00:00.000+00:00",
+		"dt_fim": "2024-11-01T00:00:00.000+00:00"
+	},
+	"dica": {
+		"idDica": null,
+		"idRoteiro": "null",
+		"bagagem": "teste",
+		"saude": "teste",
+		"costumes": "teste",
+		"moeda": "teste",
+		"idioma": "teste",
+		"documentos": "teste",
+		"clima": "teste"
+	}
+}
+```
+Retorno: 
+ok: retorna o itinerário já salvo no banco de dados
