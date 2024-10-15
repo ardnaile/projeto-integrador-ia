@@ -45,6 +45,7 @@ Exemplo de corpo da requisição em formato JSON (a logo está sendo salva como 
 ```
 
 Retorno:
+
 ok: retorna o id da agência
 
 bad request: mensagem de dados faltantes
@@ -83,6 +84,7 @@ Exemplo de corpo da requisição em formato JSON:
 ```
 
 Retorno:
+
 ok: Login successful!
 
 unauthorized: Invalid credentials
@@ -158,4 +160,5 @@ Exemplo de corpo da requisição em formato JSON:
 }
 ```
 Retorno: 
+
 ok: retorna o itinerário já salvo no banco de dados
