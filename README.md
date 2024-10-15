@@ -46,7 +46,9 @@ Exemplo de corpo da requisição em formato JSON (a logo está sendo salva como 
 
 Retorno:
 ok: retorna o id da agência
+
 bad request: mensagem de dados faltantes
+
 internal server error: erro ao registrar agência + mensagem de erro
 
 ### `POST` /usuario/register
@@ -64,7 +66,9 @@ Exemplo de corpo da requisição em formato JSON:
 
 Retorno:
 ok: retorna o nome do usuário
+
 bad request: caso a agência informada não exista no banco
+
 internal server error: erro ao registrar usuário + mensagem de erro
 
 ### `POST` /usuario/login
@@ -80,6 +84,7 @@ Exemplo de corpo da requisição em formato JSON:
 
 Retorno:
 ok: Login successful!
+
 unauthorized: Invalid credentials
 
 ### `POST` /roteiro/gerar
