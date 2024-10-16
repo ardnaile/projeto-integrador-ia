@@ -37,7 +37,7 @@ public class RoteiroController {
     private DicaRepository dicaRepository;
 
     @PostMapping("/gerar")
-    public ResponseEntity<String> gerarRoteiro(@RequestBody Prompt prompt){
+    public ResponseEntity<?> gerarRoteiro(@RequestBody Prompt prompt){
         try {
             Prompt promptValidado = roteiroService.validarPrompt(prompt);
 
@@ -45,10 +45,8 @@ public class RoteiroController {
             Dica novaDica = roteiroService.gerarDica(promptValidado, novoRoteiro);
 
             ItinerarioDto itinerarioDto = roteiroService.salvarRoteiroDica(novoRoteiro, novaDica);
-
-            String id = itinerarioDto.roteiro().getIdRoteiro().toString();
-
-            return ResponseEntity.ok(id);
+            
+            return ResponseEntity.ok(itinerarioDto);
 
         } catch (Exception e){
             return ResponseEntity.status(500).body("Erro ao gerar roteiro " + e.getMessage());
