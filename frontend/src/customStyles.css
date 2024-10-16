@@ -1,0 +1,5 @@
+.highlight {
+  background-color: #1e3a8a !important; /* Cor azul escura */
+  color: white !important; /* Texto branco */
+  border-radius: 0.375rem !important; /* Bordas arredondadas */
+}
