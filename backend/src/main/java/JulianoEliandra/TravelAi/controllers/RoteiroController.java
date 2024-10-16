@@ -75,7 +75,7 @@ public class RoteiroController {
         }
     }
 
-    @PostMapping("/editar/{id}")
+    @PatchMapping("/editar/{id}")
     public ResponseEntity<?> editarRoteiro(@PathVariable ObjectId id, @RequestBody ItinerarioDto itinerarioDto){
         try {
             ItinerarioDto roteiroEditado = roteiroService.editarRoteiro(id, itinerarioDto);
@@ -85,7 +85,7 @@ public class RoteiroController {
         }
     }
 
-    @PostMapping("/excluir/{id}")
+    @DeleteMapping("/excluir/{id}")
     public ResponseEntity<String> excluirRoteiro(@PathVariable ObjectId id){
         try{
             roteiroService.excluirRoteiro(id);
