@@ -5,7 +5,6 @@ import JulianoEliandra.TravelAi.models.Roteiro;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfDocument;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,7 @@ import java.io.FileOutputStream;
 
 @Service
 public class DocumentoService {
-    public String gerarPdfRoteiroEDicas(Roteiro roteiro, Dica dica) throws FileNotFoundException {
+    public String gerarPdf(Roteiro roteiro, Dica dica) throws FileNotFoundException {
         Document document = new Document();
         String caminhoArquivo = "roteiro_dicas_" + roteiro.getIdRoteiro() + ".pdf";
 

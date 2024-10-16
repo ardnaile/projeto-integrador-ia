@@ -10,4 +10,6 @@ public interface DicaRepository extends MongoRepository<Dica, String> {
 
     Dica findByIdRoteiro(String idRoteiro);
 
+    Dica deleteByIdRoteiro(String idRoteiro);
+
 }

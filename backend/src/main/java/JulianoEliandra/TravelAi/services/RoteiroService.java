@@ -10,8 +10,9 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -27,6 +28,8 @@ public class RoteiroService {
 
     @Autowired
     EmailService emailService;
+
+    // Validar prompt
 
     public Prompt validarPrompt(Prompt prompt){
 
@@ -66,13 +69,15 @@ public class RoteiroService {
         return prompt;
     }
 
+    // Gerar roteiro
+
     public Roteiro gerarRoteiro(Prompt prompt) {
 
         // Aqui o prompt validado será passado para o ChatGPT gerar o roteiro
 
         // Aqui está sendo gerado um roteiro padrão para exemplo
         Roteiro roteiro = new Roteiro(
-                "Roteiro de Viagem Padrão",
+                prompt.getTitulo(), // colocando o título do prompt para ter maior controle dos testes
                 "Destino padrão",
                 null,
                 "Visita a pontos turísticos, passeios de barco, e degustação de comidas locais.",
@@ -85,6 +90,8 @@ public class RoteiroService {
 
         return roteiro; // retorna para a tela de edição
     }
+
+    // Gerar dica
 
     public Dica gerarDica(Prompt prompt, Roteiro roteiro){
 
@@ -104,7 +111,7 @@ public class RoteiroService {
         return dica;
     }
 
-    // Ao apertar o botão salvar:
+    // Salvar roteiro
 
     public ItinerarioDto salvarRoteiroDica(Roteiro roteiro, Dica dica){
         Roteiro roteiroSalvo = roteiroRepository.save(roteiro);
@@ -117,41 +124,72 @@ public class RoteiroService {
         return new ItinerarioDto(roteiroSalvo, dicaSalva);
     }
 
-//    Esse método retorna os dois juntos assim:
-//    {
-//        "roteiro": {
-//        // campos do roteiro
-//    },
-//        "dica": {
-//        // campos da dica
-//    }
-//    }
-//    Retorna para jogar na tela de roteiro pronto
 
-    // EDITAR ROTEIRO EXISTENTE
+    // Editar roteiro existente
+    private void atualizarCampos(Object original, Object alterado, List<String> camposAlteraveis) {
+        for (String campoNome : camposAlteraveis) {
+            try {
+                Field campo = original.getClass().getDeclaredField(campoNome);
+                campo.setAccessible(true); // Permite acesso a campos privados
+
+                Object valorAlterado = campo.get(alterado);
+                if (valorAlterado != null) {
+                    campo.set(original, valorAlterado); // Atualiza o valor do campo
+                }
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace(); // Trata exceção se o campo não for encontrado
+            } catch (IllegalAccessException e) {
+                e.printStackTrace(); // Trata exceção de acesso ilegal
+            }
+        }
+    }
+
+    public ItinerarioDto editarRoteiro(ObjectId id, ItinerarioDto itinerarioDto){
+        // Recuperamos o roteiro e a dica a partir do id fornecido pelo cliente
+        Roteiro roteiro = roteiroRepository.findByIdRoteiro(id);
+        Dica dica = dicaRepository.findByIdRoteiro(String.valueOf(id));
+
+        if (roteiro == null){
+            throw new RuntimeException("Roteiro não encontrado");
+        }
+
+        // Recuperamos os dados do roteiro que foram alterados
+        Roteiro roteiroAlterado = itinerarioDto.roteiro();
+
+        // Setamos quais campos podem ser alterados
+        List<String> camposRoteiro = Arrays.asList("titulo", "destino", "atividades", "acomodacao", "transporte", "gastronomia", "dt_inicio", "dt_fim");
+
+        // Atualizamos os campos
+        atualizarCampos(roteiro, roteiroAlterado, camposRoteiro);
+
+        // Salvamos
+        roteiroRepository.save(roteiro);
 
 
-    // EXCLUIR ROTEIRO
+        // Mesma coisa com dica
+        Dica dicaAlterada = itinerarioDto.dica();
+        List<String> camposDica = Arrays.asList("bagagem", "saude", "costumes", "moeda", "idioma", "documentos", "clima");
+        atualizarCampos(dica, dicaAlterada, camposDica);
+        dicaRepository.save(dica);
+
+        // Retornamos
+        return new ItinerarioDto(roteiro, dica);
+    }
+
+
+    // Excluir roteiro
+
     public void excluirRoteiro(ObjectId idRoteiro) {
         // Verifica se o roteiro existe
         if (roteiroRepository.existsById(String.valueOf(idRoteiro))) {
             // Exclui o roteiro do MongoDB
             roteiroRepository.deleteById(String.valueOf(idRoteiro));
+            dicaRepository.deleteByIdRoteiro(String.valueOf(idRoteiro));
             System.out.println("Roteiro com id " + idRoteiro + " foi excluído.");
         } else {
             throw new NoSuchElementException("Roteiro não encontrado.");
         }
     }
-
-    // PDF e Envio
-    // Passar um id???
-    public void gerarPdfEmail(Roteiro roteiro, Dica dica, String emailCliente) throws FileNotFoundException, MessagingException {
-        // Gerar o PDF
-        String caminhoArquivo = documentoService.gerarPdfRoteiroEDicas(roteiro, dica);
-
-        // Enviar o PDF por e-mail
-        String assunto = "Seu Roteiro de Viagem e Dicas!";
-        String corpo = "Olá, segue em anexo o seu roteiro de viagem e dicas personalizadas.";
-        emailService.enviarEmailComAnexo(emailCliente, assunto, corpo, caminhoArquivo);
-    }
 }
+
+
