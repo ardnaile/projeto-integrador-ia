@@ -1,19 +1,24 @@
 package JulianoEliandra.TravelAi.controllers;
 
+import JulianoEliandra.TravelAi.dtos.ItinerarioDto;
 import JulianoEliandra.TravelAi.dtos.LoginDto;
 import JulianoEliandra.TravelAi.dtos.RegistroUsuarioDto;
 import JulianoEliandra.TravelAi.mappers.UsuarioMapper;
 import JulianoEliandra.TravelAi.models.Agencia;
+import JulianoEliandra.TravelAi.models.Roteiro;
 import JulianoEliandra.TravelAi.models.Usuario;
 import JulianoEliandra.TravelAi.repositories.AgenciaRepository;
 import JulianoEliandra.TravelAi.services.UsuarioService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/usuario")
+@RequestMapping("/")
 public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
@@ -22,7 +27,7 @@ public class UsuarioController {
     private AgenciaRepository agenciaRepository;
 
 
-    @PostMapping("/register")
+    @PostMapping("/usuarios")
     public ResponseEntity<String> registroUsuario(@RequestBody RegistroUsuarioDto registroUsuarioDto) {
         try{
             Usuario usuario = UsuarioMapper.toEntity(registroUsuarioDto);
@@ -39,12 +44,15 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar usuário: " + e.getMessage());
         }
     }
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
-        if (usuarioService.authenticate(loginDto)) {
-            return ResponseEntity.ok("Login successful!");
+    @PostMapping("/auth/login")
+    public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
+        ObjectId id = usuarioService.authenticate(loginDto); // chama o service
+
+        if (id != null) { // verifica se o id não é null
+            return ResponseEntity.ok(String.valueOf(id)); // login bem-sucedido
         } else {
-            return ResponseEntity.status(401).body("Invalid credentials");
+            return ResponseEntity.status(401).body("Invalid credentials"); // login falhou
         }
     }
+
 }

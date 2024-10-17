@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/agencia")
+@RequestMapping("/agencias")
 public class AgenciaController {
     @Autowired
     private AgenciaService agenciaService;
 
-    @PostMapping("/register")
+    @PostMapping("")
     public ResponseEntity<String> registroAgencia(@RequestBody RegistroAgenciaDto registroAgenciaDto){
         try{
             Agencia agencia = AgenciaMapper.toEntity(registroAgenciaDto);

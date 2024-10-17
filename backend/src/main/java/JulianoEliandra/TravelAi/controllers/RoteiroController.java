@@ -16,12 +16,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/roteiro")
+@RequestMapping("/roteiros")
 public class RoteiroController {
     @Autowired
     private RoteiroService roteiroService;
@@ -38,7 +39,7 @@ public class RoteiroController {
     @Autowired
     private DicaRepository dicaRepository;
 
-    @PostMapping("/gerar")
+    @PostMapping("")
     public ResponseEntity<?> gerarRoteiro(@RequestBody Prompt prompt){
         try {
             Prompt promptValidado = roteiroService.validarPrompt(prompt);
@@ -55,7 +56,7 @@ public class RoteiroController {
         }
     }
 
-    @PostMapping("/enviar/{id}")
+    @PostMapping("/{id}/enviar-email")
     public ResponseEntity<String> enviarRoteiro(@PathVariable ObjectId id, @RequestBody EmailDto emailDto) throws FileNotFoundException {
         try {
 
@@ -75,7 +76,7 @@ public class RoteiroController {
         }
     }
 
-    @PatchMapping("/editar/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<?> editarRoteiro(@PathVariable ObjectId id, @RequestBody ItinerarioDto itinerarioDto){
         try {
             ItinerarioDto roteiroEditado = roteiroService.editarRoteiro(id, itinerarioDto);
@@ -85,7 +86,7 @@ public class RoteiroController {
         }
     }
 
-    @DeleteMapping("/excluir/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> excluirRoteiro(@PathVariable ObjectId id){
         try{
             roteiroService.excluirRoteiro(id);
@@ -93,6 +94,12 @@ public class RoteiroController {
         } catch (NoSuchElementException e){
             return ResponseEntity.status(500).body("Erro ao excluir");
         }
+    }
+
+    @GetMapping("/{idUsuario}")
+    public ResponseEntity<List<ItinerarioDto>> listarRoteiros(@PathVariable ObjectId idUsuario){
+        List<ItinerarioDto> roteiros = roteiroService.listarRoteiros(idUsuario);
+        return ResponseEntity.ok(roteiros);
     }
 
 }

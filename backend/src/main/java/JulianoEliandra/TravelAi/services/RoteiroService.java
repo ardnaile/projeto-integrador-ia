@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class RoteiroService {
@@ -31,7 +33,7 @@ public class RoteiroService {
 
     // Validar prompt
 
-    public Prompt validarPrompt(Prompt prompt){
+    public Prompt validarPrompt(Prompt prompt) {
 
         // Validamos o que o usuário enviou e colocamos valores default se tiver algo null
 
@@ -71,7 +73,7 @@ public class RoteiroService {
 
     // Gerar roteiro
 
-    public Roteiro gerarRoteiro(Prompt prompt) {
+    public Roteiro gerarRoteiro(Prompt prompt) { // vamos pegar o id do usuário de parametro tb depois
 
         // Aqui o prompt validado será passado para o ChatGPT gerar o roteiro
 
@@ -93,7 +95,7 @@ public class RoteiroService {
 
     // Gerar dica
 
-    public Dica gerarDica(Prompt prompt, Roteiro roteiro){
+    public Dica gerarDica(Prompt prompt, Roteiro roteiro) {
 
         // No momento de gerar o roteiro, também vamos rodar essa função e gerar as dicas com base no prompt
 
@@ -113,7 +115,7 @@ public class RoteiroService {
 
     // Salvar roteiro
 
-    public ItinerarioDto salvarRoteiroDica(Roteiro roteiro, Dica dica){
+    public ItinerarioDto salvarRoteiroDica(Roteiro roteiro, Dica dica) {
         Roteiro roteiroSalvo = roteiroRepository.save(roteiro);
 
         // setamos o id do roteiro dentro de dica
@@ -144,12 +146,12 @@ public class RoteiroService {
         }
     }
 
-    public ItinerarioDto editarRoteiro(ObjectId id, ItinerarioDto itinerarioDto){
+    public ItinerarioDto editarRoteiro(ObjectId id, ItinerarioDto itinerarioDto) {
         // Recuperamos o roteiro e a dica a partir do id fornecido pelo cliente
         Roteiro roteiro = roteiroRepository.findByIdRoteiro(id);
         Dica dica = dicaRepository.findByIdRoteiro(String.valueOf(id));
 
-        if (roteiro == null){
+        if (roteiro == null) {
             throw new RuntimeException("Roteiro não encontrado");
         }
 
@@ -190,6 +192,33 @@ public class RoteiroService {
             throw new NoSuchElementException("Roteiro não encontrado.");
         }
     }
+
+    public List<ItinerarioDto> listarRoteiros(ObjectId id) {
+        // Busca todos os roteiros pelo id do usuário
+        List<Roteiro> roteiros = roteiroRepository.findAllByIdRoteiro(id);
+
+        // Busca todas as dicas associadas ao idRoteiro
+        List<Dica> dicas = dicaRepository.findAllByIdRoteiro(String.valueOf(id));
+
+        // Cria uma lista para armazenar os ItinerarioDto
+        List<ItinerarioDto> itinerarios = new ArrayList<>();
+
+        // Itera sobre cada roteiro
+        for (Roteiro roteiro : roteiros) {
+            // Itera sobre cada dica correspondente ao roteiro
+            for (Dica dica : dicas) {
+                if (dica.getIdRoteiro().equals(roteiro.getIdRoteiro())) {
+                    // Cria um novo ItinerarioDto com o Roteiro e a Dica
+                    ItinerarioDto itinerarioDto = new ItinerarioDto(roteiro, dica);
+
+                    // Adiciona o ItinerarioDto à lista
+                    itinerarios.add(itinerarioDto);
+                }
+            }
+        }
+
+        // Retorna a lista de ItinerarioDto
+        return itinerarios;
+    }
+
 }
-
-
