@@ -1,20 +1,22 @@
 package JulianoEliandra.TravelAi.controllers;
 
 import JulianoEliandra.TravelAi.dtos.ItinerarioDto;
-import JulianoEliandra.TravelAi.dtos.PdfEmailDto;
+import JulianoEliandra.TravelAi.dtos.EmailDto;
 import JulianoEliandra.TravelAi.models.Dica;
 import JulianoEliandra.TravelAi.models.Prompt;
 import JulianoEliandra.TravelAi.models.Roteiro;
 import JulianoEliandra.TravelAi.repositories.DicaRepository;
 import JulianoEliandra.TravelAi.repositories.RoteiroRepository;
+import JulianoEliandra.TravelAi.services.DocumentoService;
+import JulianoEliandra.TravelAi.services.EmailService;
 import JulianoEliandra.TravelAi.services.RoteiroService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import java.io.FileNotFoundException;
+import java.util.NoSuchElementException;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/roteiro")
@@ -23,38 +25,72 @@ public class RoteiroController {
     private RoteiroService roteiroService;
 
     @Autowired
+    private DocumentoService documentoService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private RoteiroRepository roteiroRepository;
 
     @Autowired
     private DicaRepository dicaRepository;
 
     @PostMapping("/gerar")
-    public ResponseEntity<ItinerarioDto> gerarRoteiro(@RequestBody Prompt prompt){
+    public ResponseEntity<?> gerarRoteiro(@RequestBody Prompt prompt){
+        try {
+            Prompt promptValidado = roteiroService.validarPrompt(prompt);
 
-        Prompt promptValidado = roteiroService.validarPrompt(prompt);
+            Roteiro novoRoteiro = roteiroService.gerarRoteiro(promptValidado);
+            Dica novaDica = roteiroService.gerarDica(promptValidado, novoRoteiro);
 
-        Roteiro novoRoteiro = roteiroService.gerarRoteiro(promptValidado);
-        Dica novaDica = roteiroService.gerarDica(promptValidado, novoRoteiro);
+            ItinerarioDto itinerarioDto = roteiroService.salvarRoteiroDica(novoRoteiro, novaDica);
+            
+            return ResponseEntity.ok(itinerarioDto);
 
-        ItinerarioDto itinerarioDto = new ItinerarioDto(novoRoteiro, novaDica);
-
-        return ResponseEntity.ok(itinerarioDto);
+        } catch (Exception e){
+            return ResponseEntity.status(500).body("Erro ao gerar roteiro " + e.getMessage());
+        }
     }
 
-    @PostMapping("/salvar")
-    public ResponseEntity<ItinerarioDto> salvarRoteiro(@RequestBody ItinerarioDto itinerarioDto){
-        ItinerarioDto itinerario = roteiroService.salvarRoteiroDica(itinerarioDto.roteiro(), itinerarioDto.dica());
-        return ResponseEntity.ok(itinerario);
+    @PostMapping("/enviar/{id}")
+    public ResponseEntity<String> enviarRoteiro(@PathVariable ObjectId id, @RequestBody EmailDto emailDto) throws FileNotFoundException {
+        try {
+
+            // Recuperar o roteiro e as dicas
+            Roteiro roteiro = roteiroRepository.findByIdRoteiro(id);
+            Dica dica = dicaRepository.findByIdRoteiro(String.valueOf(id));
+
+            // Gerar o PDF
+            String caminhoArquivo = documentoService.gerarPdf(roteiro, dica);
+
+            // Enviar o PDF por e-mail
+            emailService.enviarEmail(emailDto.getEmailCliente(), emailDto.getMensagem(), caminhoArquivo);
+
+            return ResponseEntity.ok("Roteiro enviado!");
+        } catch (Exception e){
+            return ResponseEntity.status(500).body("Erro ao enviar e-mail " + e.getMessage());
+        }
     }
 
-    @PostMapping("/enviar")
-    public ResponseEntity<String> enviarRoteiroDicasPorEmail(@RequestBody PdfEmailDto pdfEmailDto) throws FileNotFoundException, MessagingException {
-        // Recuperar o roteiro e as dicas
-        Roteiro roteiro = roteiroRepository.findByIdRoteiro(pdfEmailDto.getIdRoteiro());
-        Dica dica = dicaRepository.findByIdRoteiro(String.valueOf(pdfEmailDto.getIdRoteiro()));
-        roteiroService.gerarPdfEmail(roteiro, dica, pdfEmailDto.getEmailCliente());
+    @PatchMapping("/editar/{id}")
+    public ResponseEntity<?> editarRoteiro(@PathVariable ObjectId id, @RequestBody ItinerarioDto itinerarioDto){
+        try {
+            ItinerarioDto roteiroEditado = roteiroService.editarRoteiro(id, itinerarioDto);
+            return ResponseEntity.ok(roteiroEditado);
+        } catch (Exception e){
+            return ResponseEntity.status(500).body("Erro ao atualizar roteiro " + e.getMessage());
+        }
+    }
 
-        return ResponseEntity.ok("Roteiro e dicas enviados por e-mail com sucesso!");
+    @DeleteMapping("/excluir/{id}")
+    public ResponseEntity<String> excluirRoteiro(@PathVariable ObjectId id){
+        try{
+            roteiroService.excluirRoteiro(id);
+            return ResponseEntity.ok("Excluido");
+        } catch (NoSuchElementException e){
+            return ResponseEntity.status(500).body("Erro ao excluir");
+        }
     }
 
 }

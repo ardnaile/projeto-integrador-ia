@@ -1,19 +1,11 @@
 package JulianoEliandra.TravelAi.dtos;
 
-import org.bson.types.ObjectId;
 
-public class PdfEmailDto {
-    private ObjectId idRoteiro;
+public class EmailDto {
     private String emailCliente;
+    private String mensagem;
 
     // Getters e Setters
-    public ObjectId getIdRoteiro() {
-        return idRoteiro;
-    }
-
-    public void setIdRoteiro(ObjectId idRoteiro) {
-        this.idRoteiro = idRoteiro;
-    }
 
     public String getEmailCliente() {
         return emailCliente;
@@ -21,5 +13,13 @@ public class PdfEmailDto {
 
     public void setEmailCliente(String emailCliente) {
         this.emailCliente = emailCliente;
+    }
+
+    public String getMensagem() {
+        return mensagem;
+    }
+
+    public void setMensagem(String mensagem) {
+        this.mensagem = mensagem;
     }
 }

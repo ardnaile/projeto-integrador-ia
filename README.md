@@ -35,7 +35,7 @@ A [modelagem dos dados](https://dbdiagram.io/d/modelagem-projeto-ia-66d257a6eef7
 ### `POST` /agencia/register
 Registro de agências de viagem, não será implementado formulário no Front-end.
 
-Exemplo de corpo da requisição em formato JSON (a logo está sendo salva como string de forma provisória):
+Body:
 ```
 {
 	"nome": "teste1",
@@ -55,7 +55,7 @@ internal server error: erro ao registrar agência + mensagem de erro
 ### `POST` /usuario/register
 Registro de usuários, só é possível registrar usuários com uma agência existente.
 
-Exemplo de corpo da requisição em formato JSON:
+Body:
 ```
 {
 	"nomeUsuario": "teste1",
@@ -75,7 +75,7 @@ internal server error: erro ao registrar usuário + mensagem de erro
 ### `POST` /usuario/login
 Login de usuário por enquanto sem camada de segurança e autorização de rotas.
 
-Exemplo de corpo da requisição em formato JSON:
+Body:
 ```
 {
 	"nomeUsuario": "teste1",
@@ -90,75 +90,51 @@ ok: Login successful!
 unauthorized: Invalid credentials
 
 ### `POST` /roteiro/gerar
-Gera um roteiro e dicas com base em inputs coleados do Front-end. Posteriormente, será gerado com IA.
+Gera um roteiro e dicas com base em inputs coleados do Front-end. Posteriormente, será gerado com IA. O usuário pode deixar os inputs em branco, caso queira. Os únicos campos que são obrigatórios são as datas:
 
-Exemplo de corpo da requisição em formato JSON. O usuário pode deixar os inputs em branco, caso queira, como é o caso desse exemplo. Os únicos campos que são obrigatórios são as datas:
+Body:
 ```
 {
 	"titulo": "TESTE",
-  "dt_inicio": "2024-11-01T00:00:00Z",
+  	"dt_inicio": "2024-11-01T00:00:00Z",
 	"dt_fim": "2024-11-01T00:00:00Z"
 }
 ```
-Retorna um JSON com o roteiro e a dica, ainda não salvos no banco de dados. Eles vão para uma tela de edição primeiro.
+
+Retorna o roteiro recém gerado.
+
+
+### `POST` /roteiro/enviar/{id}
+Gera um pdf do roteiro cujo id foi fornecido e envia por email.
+
+Body:
+```
+{
+	"emailCliente": "emailteste@gmail.com",
+	"mensagem": "email teste"
+}
+```
+Retorna se o roteiro foi enviado com sucesso ou uma mensagem de erro.
+
+
+### `PATCH` /roteiro/editar/{id}
+Permite alterar informações do roteiro e das dicas. Assim como para gerar o roteiro, nem todos os campos precisam ser preenchidos.
+
+Body:
 ```
 {
 	"roteiro": {
-		"idRoteiro": null,
-		"titulo": "Roteiro de Viagem Padrão",
-		"destino": "Destino padrão",
-		"idUsuario": null,
-		"atividades": "Visita a pontos turísticos, passeios de barco, e degustação de comidas locais.",
-		"acomodacao": "Hotel Padrão",
-		"transporte": "Ônibus turístico",
-		"gastronomia": "Culinária local e restaurantes recomendados",
-		"dt_inicio": "2024-11-01T00:00:00.000+00:00",
-		"dt_fim": "2024-11-01T00:00:00.000+00:00"
+		"destino": "TESTE DESTINO EDITADO"
 	},
 	"dica": {
-		"idDica": null,
-		"idRoteiro": "null",
-		"bagagem": "teste",
-		"saude": "teste",
-		"costumes": "teste",
-		"moeda": "teste",
-		"idioma": "teste",
-		"documentos": "teste",
-		"clima": "teste"
+		"bagagem": "TESTE BAGAGEM EDITADA"
 	}
 }
 ```
-### `POST` /roteiro/salvar
-Após fazer as alterações necessárias e ao clicar no botão de salvar na tela de edição, os dados são salvos no banco de dados.
 
-Exemplo de corpo da requisição em formato JSON:
-```
-{
-	"roteiro": {
-		"idRoteiro": null,
-		"titulo": "Roteiro de Viagem Padrão",
-		"destino": "Destino padrão",
-		"idUsuario": null,
-		"atividades": "Visita a pontos turísticos, passeios de barco, e degustação de comidas locais.",
-		"acomodacao": "Hotel Padrão",
-		"transporte": "Ônibus turístico",
-		"gastronomia": "Culinária local e restaurantes recomendados",
-		"dt_inicio": "2024-11-01T00:00:00.000+00:00",
-		"dt_fim": "2024-11-01T00:00:00.000+00:00"
-	},
-	"dica": {
-		"idDica": null,
-		"idRoteiro": "null",
-		"bagagem": "teste",
-		"saude": "teste",
-		"costumes": "teste",
-		"moeda": "teste",
-		"idioma": "teste",
-		"documentos": "teste",
-		"clima": "teste"
-	}
-}
-```
-Retorno: 
+Retorna o roteiro com as alterações aplicadas.
 
-ok: retorna o itinerário já salvo no banco de dados
+### `DELETE` /roteiro/excluir/{id}
+Deleta um roteiro do banco. Não necessita de corpo, apenas retorna se a exclusão foi bem sucedida.
+
+
