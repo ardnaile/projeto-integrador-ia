@@ -4,8 +4,8 @@ const ModalAdicionarRoteiro = ({ isOpen, onClose, onAdd }) => {
   const [novoRoteiro, setNovoRoteiro] = useState({
     atividades: "",
     acomodacao: "",
-    dataInicio: "",
-    dataFim: "",
+    dt_inicio: "",
+    dt_fim: "",
   });
   const [formError, setFormError] = useState("");
 
@@ -20,8 +20,8 @@ const ModalAdicionarRoteiro = ({ isOpen, onClose, onAdd }) => {
     if (
       !novoRoteiro.atividades ||
       !novoRoteiro.acomodacao ||
-      !novoRoteiro.dataInicio ||
-      !novoRoteiro.dataFim
+      !novoRoteiro.dt_inicio ||
+      !novoRoteiro.dt_fim
     ) {
       setFormError("Todos os campos são obrigatórios.");
       return;
@@ -76,15 +76,15 @@ const ModalAdicionarRoteiro = ({ isOpen, onClose, onAdd }) => {
 
         <div className="mb-4">
           <label
-            htmlFor="dataInicio"
+            htmlFor="dt_inicio"
             className="block text-sm font-medium text-gray-700"
           >
             Data de Início
           </label>
           <input
             type="date"
-            name="dataInicio"
-            value={novoRoteiro.dataInicio}
+            name="dt_inicio"
+            value={novoRoteiro.dt_inicio}
             onChange={handleChange}
             className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
@@ -92,15 +92,15 @@ const ModalAdicionarRoteiro = ({ isOpen, onClose, onAdd }) => {
 
         <div className="mb-4">
           <label
-            htmlFor="dataFim"
+            htmlFor="dt_fim"
             className="block text-sm font-medium text-gray-700"
           >
             Data de Fim
           </label>
           <input
             type="date"
-            name="dataFim"
-            value={novoRoteiro.dataFim}
+            name="dt_fim"
+            value={novoRoteiro.dt_fim}
             onChange={handleChange}
             className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />

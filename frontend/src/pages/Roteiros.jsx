@@ -49,7 +49,7 @@ const Roteiros = () => {
             {roteiros.map((roteiro, index) => (
               <li key={index}>
                 {roteiro.atividades} - {roteiro.acomodacao} -{" "}
-                {roteiro.dataInicio} até {roteiro.dataFim}
+                {roteiro.dt_inicio} até {roteiro.dt_fim}
               </li>
             ))}
           </ul>
