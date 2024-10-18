@@ -32,7 +32,7 @@ A [modelagem dos dados](https://dbdiagram.io/d/modelagem-projeto-ia-66d257a6eef7
 ---
 ## Requisições
 
-### `POST` /agencia/register
+### `POST` /agencias
 Registro de agências de viagem, não será implementado formulário no Front-end.
 
 Body:
@@ -52,7 +52,7 @@ bad request: mensagem de dados faltantes
 
 internal server error: erro ao registrar agência + mensagem de erro
 
-### `POST` /usuario/register
+### `POST` /usuarios
 Registro de usuários, só é possível registrar usuários com uma agência existente.
 
 Body:
@@ -72,7 +72,7 @@ bad request: caso a agência informada não exista no banco
 
 internal server error: erro ao registrar usuário + mensagem de erro
 
-### `POST` /usuario/login
+### `POST` /auth/login
 Login de usuário por enquanto sem camada de segurança e autorização de rotas.
 
 Body:
@@ -89,7 +89,7 @@ ok: Login successful!
 
 unauthorized: Invalid credentials
 
-### `POST` /roteiro/gerar
+### `POST` /roteiros
 Gera um roteiro e dicas com base em inputs coleados do Front-end. Posteriormente, será gerado com IA. O usuário pode deixar os inputs em branco, caso queira. Os únicos campos que são obrigatórios são as datas:
 
 Body:
@@ -104,7 +104,7 @@ Body:
 Retorna o roteiro recém gerado.
 
 
-### `POST` /roteiro/enviar/{id}
+### `POST` /roteiros/{id}/enviar-email
 Gera um pdf do roteiro cujo id foi fornecido e envia por email.
 
 Body:
@@ -117,7 +117,7 @@ Body:
 Retorna se o roteiro foi enviado com sucesso ou uma mensagem de erro.
 
 
-### `PATCH` /roteiro/editar/{id}
+### `PATCH` /roteiros/{id}
 Permite alterar informações do roteiro e das dicas. Assim como para gerar o roteiro, nem todos os campos precisam ser preenchidos.
 
 Body:
@@ -134,7 +134,8 @@ Body:
 
 Retorna o roteiro com as alterações aplicadas.
 
-### `DELETE` /roteiro/excluir/{id}
+### `DELETE` /roteiros/{id}
 Deleta um roteiro do banco. Não necessita de corpo, apenas retorna se a exclusão foi bem sucedida.
 
-
+### `GET` /roteiros/{idUsuario}
+Retorna uma lista de roteiros referentes ao id do usuário passado na requisição, no caso será o usuário logado.
