@@ -34,30 +34,32 @@ public class RoteiroService {
     // Validar prompt
 
     public Prompt validarPrompt(Prompt prompt) {
+        Prompt promptValidado = new Prompt();
 
-        // Validamos o que o usuário enviou e colocamos valores default se tiver algo null
+        // Verifica cada campo e mantém os que estiverem preenchidos
 
-        if (prompt.getTitulo() == null || prompt.getTitulo().isEmpty()) {
-            prompt.setTitulo("Roteiro Padrão");
+        if (prompt.getTitulo() != null && !prompt.getTitulo().isEmpty()) {
+            promptValidado.setTitulo(prompt.getTitulo());
         }
-        if (prompt.getDestino() == null || prompt.getDestino().isEmpty()) {
-            prompt.setDestino("Destino Padrão");
+        if (prompt.getDestino() != null && !prompt.getDestino().isEmpty()) {
+            promptValidado.setDestino(prompt.getDestino());
         }
-        if (prompt.getAtividades() == null || prompt.getAtividades().isEmpty()) {
-            prompt.setAtividades("Atividades de exemplo: passeio pela cidade, trilhas.");
+        if (prompt.getAtividades() != null && !prompt.getAtividades().isEmpty()) {
+            promptValidado.setAtividades(prompt.getAtividades());
         }
-        if (prompt.getAcomodacao() == null || prompt.getAcomodacao().isEmpty()) {
-            prompt.setAcomodacao("Acomodação padrão: hotel local.");
+        if (prompt.getAcomodacao() != null && !prompt.getAcomodacao().isEmpty()) {
+            promptValidado.setAcomodacao(prompt.getAcomodacao());
         }
-        if (prompt.getTransporte() == null || prompt.getTransporte().isEmpty()) {
-            prompt.setTransporte("Transporte padrão: ônibus ou carro.");
+        if (prompt.getTransporte() != null && !prompt.getTransporte().isEmpty()) {
+            promptValidado.setTransporte(prompt.getTransporte());
         }
-        if (prompt.getGastronomia() == null || prompt.getGastronomia().isEmpty()) {
-            prompt.setGastronomia("Gastronomia local: pratos típicos da região.");
+        if (prompt.getGastronomia() != null && !prompt.getGastronomia().isEmpty()) {
+            promptValidado.setGastronomia(prompt.getGastronomia());
         }
-        if (prompt.getOrcamento() == null || prompt.getOrcamento().isEmpty()) {
-            prompt.setOrcamento("Orçamento médio.");
+        if (prompt.getOrcamento() != null && !prompt.getOrcamento().isEmpty()) {
+            promptValidado.setOrcamento(prompt.getOrcamento());
         }
+
 
         // Validação das datas
 
@@ -68,36 +70,26 @@ public class RoteiroService {
             throw new IllegalArgumentException("A data de fim não pode ser nula.");
         }
 
-        return prompt;
+        return promptValidado;
     }
 
-    // Gerar roteiro
+    public ItinerarioDto gerarRoteiroDica(Prompt prompt){
+        // monta o payload para a api do chatgpt
 
-    public Roteiro gerarRoteiro(Prompt prompt) { // vamos pegar o id do usuário de parametro tb depois
+        // faz a chamada para a api
 
-        // Aqui o prompt validado será passado para o ChatGPT gerar o roteiro
-
-        // Aqui está sendo gerado um roteiro padrão para exemplo
+        // parse da resposta json para objeto java
         Roteiro roteiro = new Roteiro(
-                prompt.getTitulo(), // colocando o título do prompt para ter maior controle dos testes
-                "Destino padrão",
+                prompt.getTitulo(),
+                "Padrão",
                 null,
-                "Visita a pontos turísticos, passeios de barco, e degustação de comidas locais.",
-                "Hotel Padrão",
-                "Ônibus turístico",
-                "Culinária local e restaurantes recomendados",
+                "Padrão",
+                "Padrão",
+                "Padrão",
+                "Padrão",
                 prompt.getDt_inicio(),
                 prompt.getDt_fim()
         );
-
-        return roteiro; // retorna para a tela de edição
-    }
-
-    // Gerar dica
-
-    public Dica gerarDica(Prompt prompt, Roteiro roteiro) {
-
-        // No momento de gerar o roteiro, também vamos rodar essa função e gerar as dicas com base no prompt
 
         Dica dica = new Dica(
                 String.valueOf(roteiro.getIdRoteiro()),
@@ -110,12 +102,20 @@ public class RoteiroService {
                 "teste"
         );
 
-        return dica;
+        ItinerarioDto roteiroDica = new ItinerarioDto(
+                roteiro,
+                dica
+        );
+        return roteiroDica;
     }
 
     // Salvar roteiro
 
-    public ItinerarioDto salvarRoteiroDica(Roteiro roteiro, Dica dica) {
+    public ItinerarioDto salvarRoteiroDica(ItinerarioDto itinerarioDto) {
+        // Recebemos o itinerário e salvamos separadamente
+        Roteiro roteiro = itinerarioDto.roteiro();
+        Dica dica = itinerarioDto.dica();
+
         Roteiro roteiroSalvo = roteiroRepository.save(roteiro);
 
         // setamos o id do roteiro dentro de dica

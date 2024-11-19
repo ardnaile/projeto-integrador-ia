@@ -44,10 +44,9 @@ public class RoteiroController {
         try {
             Prompt promptValidado = roteiroService.validarPrompt(prompt);
 
-            Roteiro novoRoteiro = roteiroService.gerarRoteiro(promptValidado);
-            Dica novaDica = roteiroService.gerarDica(promptValidado, novoRoteiro);
+            ItinerarioDto novoRoteiroDica = roteiroService.gerarRoteiroDica(promptValidado);
 
-            ItinerarioDto itinerarioDto = roteiroService.salvarRoteiroDica(novoRoteiro, novaDica);
+            ItinerarioDto itinerarioDto = roteiroService.salvarRoteiroDica(novoRoteiroDica);
             
             return ResponseEntity.ok(itinerarioDto);
 
@@ -101,5 +100,5 @@ public class RoteiroController {
         List<ItinerarioDto> roteiros = roteiroService.listarRoteiros(idUsuario);
         return ResponseEntity.ok(roteiros);
     }
-
+    
 }

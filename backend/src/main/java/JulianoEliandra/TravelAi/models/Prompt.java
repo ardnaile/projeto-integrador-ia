@@ -10,23 +10,23 @@ public class Prompt {
     private String acomodacao;
     private String transporte;
     private String gastronomia;
-
     private String orcamento;
 
     private Date dt_inicio;
     private Date dt_fim;
 
-    public Prompt(String titulo, String destino, String atividades, String acomodacao, String transporte, String gastronomia, String orcamento, Date dt_inicio, Date dt_fim) {
-        this.titulo = titulo;
-        this.destino = destino;
-        this.atividades = atividades;
-        this.acomodacao = acomodacao;
-        this.transporte = transporte;
-        this.gastronomia = gastronomia;
-        this.orcamento = orcamento;
-        this.dt_inicio = dt_inicio;
-        this.dt_fim = dt_fim;
-    }
+
+//    public Prompt(String titulo, String destino, String atividades, String acomodacao, String transporte, String gastronomia, String orcamento, Date dt_inicio, Date dt_fim) {
+//        this.titulo = titulo;
+//        this.destino = destino;
+//        this.atividades = atividades;
+//        this.acomodacao = acomodacao;
+//        this.transporte = transporte;
+//        this.gastronomia = gastronomia;
+//        this.orcamento = orcamento;
+//        this.dt_inicio = dt_inicio;
+//        this.dt_fim = dt_fim;
+//    }
 
     public Prompt(){}
 
@@ -99,5 +99,17 @@ public class Prompt {
 
     public void setOrcamento(String orcamento) {
         this.orcamento = orcamento;
+    }
+
+    public boolean isEmpty() {
+        return (this.titulo == null || this.titulo.isEmpty()) &&
+                (this.destino == null || this.destino.isEmpty()) &&
+                (this.atividades == null || this.atividades.isEmpty()) &&
+                (this.acomodacao == null || this.acomodacao.isEmpty()) &&
+                (this.transporte == null || this.transporte.isEmpty()) &&
+                (this.gastronomia == null || this.gastronomia.isEmpty()) &&
+                (this.orcamento == null || this.orcamento.isEmpty()) &&
+                (this.dt_inicio == null) &&
+                (this.dt_fim == null);
     }
 }
