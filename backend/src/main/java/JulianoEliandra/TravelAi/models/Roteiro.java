@@ -20,8 +20,9 @@ public class Roteiro {
     private String gastronomia;
     private Date dt_inicio;
     private Date dt_fim;
+    private String idPrompt;
 
-    public Roteiro(String titulo, String destino, String idUsuario, String atividades, String acomodacao, String transporte, String gastronomia, Date dt_inicio, Date dt_fim) {
+    public Roteiro(String titulo, String destino, String idUsuario, String atividades, String acomodacao, String transporte, String gastronomia, Date dt_inicio, Date dt_fim, String idPrompt) {
         this.titulo = titulo;
         this.destino = destino;
         this.idUsuario = idUsuario;
@@ -31,7 +32,9 @@ public class Roteiro {
         this.gastronomia = gastronomia;
         this.dt_inicio = dt_inicio;
         this.dt_fim = dt_fim;
+        this.idPrompt = idPrompt;
     }
+//    public Roteiro(){};
 
     public ObjectId getIdRoteiro() {
         return idRoteiro;
@@ -111,5 +114,13 @@ public class Roteiro {
 
     public void setDt_fim(Date dt_fim) {
         this.dt_fim = dt_fim;
+    }
+
+    public String getIdPrompt() {
+        return idPrompt;
+    }
+
+    public void setIdPrompt(String idPrompt) {
+        this.idPrompt = idPrompt;
     }
 }

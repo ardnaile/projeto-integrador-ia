@@ -12,17 +12,15 @@ public class Dica {
     private ObjectId idDica;
     private String idRoteiro;
     private String bagagem;
-    private String saude;
     private String costumes;
     private String moeda;
     private String idioma;
     private String documentos;
     private String clima;
 
-    public Dica(String idRoteiro, String bagagem, String saude, String costumes, String moeda, String idioma, String documentos, String clima) {
+    public Dica(String idRoteiro, String bagagem, String costumes, String moeda, String idioma, String documentos, String clima) {
         this.idRoteiro = idRoteiro;
         this.bagagem = bagagem;
-        this.saude = saude;
         this.costumes = costumes;
         this.moeda = moeda;
         this.idioma = idioma;
@@ -52,14 +50,6 @@ public class Dica {
 
     public void setBagagem(String bagagem) {
         this.bagagem = bagagem;
-    }
-
-    public String getSaude() {
-        return saude;
-    }
-
-    public void setSaude(String saude) {
-        this.saude = saude;
     }
 
     public String getCostumes() {

@@ -80,7 +80,7 @@ public class RoteiroService {
 
         // parse da resposta json para objeto java
         Roteiro roteiro = new Roteiro(
-                prompt.getTitulo(),
+                "Padrão",
                 "Padrão",
                 null,
                 "Padrão",
@@ -88,12 +88,12 @@ public class RoteiroService {
                 "Padrão",
                 "Padrão",
                 prompt.getDt_inicio(),
-                prompt.getDt_fim()
+                prompt.getDt_fim(),
+                prompt.getIdPrompt().toString()
         );
 
         Dica dica = new Dica(
                 String.valueOf(roteiro.getIdRoteiro()),
-                "teste",
                 "teste",
                 "teste",
                 "teste",

@@ -1,11 +1,16 @@
 package JulianoEliandra.TravelAi.models;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
+
 import java.util.Date;
 
+@Document(collection = "Prompt")
 public class Prompt {
-    private String titulo;
+    @MongoId
+    private ObjectId idPrompt;
     private String destino;
-
     private String atividades;
     private String acomodacao;
     private String transporte;
@@ -16,8 +21,8 @@ public class Prompt {
     private Date dt_fim;
 
 
-//    public Prompt(String titulo, String destino, String atividades, String acomodacao, String transporte, String gastronomia, String orcamento, Date dt_inicio, Date dt_fim) {
-//        this.titulo = titulo;
+//    public Prompt(ObjectId idPrompt, String destino, String atividades, String acomodacao, String transporte, String gastronomia, String orcamento, Date dt_inicio, Date dt_fim) {
+//        this.idPrompt = idPrompt;
 //        this.destino = destino;
 //        this.atividades = atividades;
 //        this.acomodacao = acomodacao;
@@ -30,12 +35,12 @@ public class Prompt {
 
     public Prompt(){}
 
-    public String getTitulo() {
-        return titulo;
+    public ObjectId getIdPrompt() {
+        return idPrompt;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
+    public void setIdPrompt(ObjectId idPrompt) {
+        this.idPrompt = idPrompt;
     }
 
     public String getDestino() {
@@ -102,8 +107,7 @@ public class Prompt {
     }
 
     public boolean isEmpty() {
-        return (this.titulo == null || this.titulo.isEmpty()) &&
-                (this.destino == null || this.destino.isEmpty()) &&
+        return (this.destino == null || this.destino.isEmpty()) &&
                 (this.atividades == null || this.atividades.isEmpty()) &&
                 (this.acomodacao == null || this.acomodacao.isEmpty()) &&
                 (this.transporte == null || this.transporte.isEmpty()) &&
