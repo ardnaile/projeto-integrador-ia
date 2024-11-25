@@ -28,6 +28,8 @@ public class Dica {
         this.clima = clima;
     }
 
+    public Dica(){};
+
     public ObjectId getIdDica() {
         return idDica;
     }

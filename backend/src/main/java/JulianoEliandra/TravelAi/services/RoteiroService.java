@@ -6,11 +6,16 @@ import JulianoEliandra.TravelAi.models.Input;
 import JulianoEliandra.TravelAi.models.Roteiro;
 import JulianoEliandra.TravelAi.repositories.DicaRepository;
 import JulianoEliandra.TravelAi.repositories.RoteiroRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -21,34 +26,62 @@ public class RoteiroService {
     @Autowired
     DicaRepository dicaRepository;
 
-    public ItinerarioDto gerarRoteiroDica(String prompt, Date dt_inicio, Date dt_fim){
+    public ItinerarioDto gerarRoteiroDica(String resposta, Date dt_inicio, Date dt_fim) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
 
+        // Converte a string JSON em um JsonNode
+        JsonNode rootNode = objectMapper.readTree(resposta);
+
+        // Acessa o objeto 'roteiro' dentro do JSON
+        JsonNode roteiroNode = rootNode.path("roteiro");
+
+        // Acessa os campos do objeto 'roteiro'
+        String titulo = roteiroNode.path("titulo").asText();
+        String destino = roteiroNode.path("destino").toString();  // 'destino' é uma lista, então usamos toString()
+        String atividades = roteiroNode.path("atividades").toString(); // 'atividades' também é uma lista
+        String acomodacao = roteiroNode.path("acomodacao").asText();
+        String transporte = roteiroNode.path("transporte").asText();
+        String gastronomia = roteiroNode.path("gastronomia").asText();
+
+
+        // Acessa o objeto 'dica' dentro do JSON
+        JsonNode dicaNode = rootNode.path("dicas");
+
+        // Acessa os campos do objeto 'dicas'
+        String bagagem = dicaNode.path("bagagem").asText();
+        String costumes = dicaNode.path("costumes").asText();
+        String moeda = dicaNode.path("moedas").asText();
+        String idioma = dicaNode.path("idioma").asText();
+        String documentos = dicaNode.path("documentos").asText();
+        String clima = dicaNode.path("clima").asText();
+
+        // Criação do objeto Roteiro
         Roteiro roteiro = new Roteiro(
-                "Padrão",
-                "Padrão",
+                titulo,
+                destino,
                 null,
-                "Padrão",
-                "Padrão",
-                "Padrão",
-                "Padrão",
+                atividades,
+                acomodacao,
+                transporte,
+                gastronomia,
                 dt_inicio,
                 dt_fim
         );
 
+        // Criação do objeto Dica
         Dica dica = new Dica(
-                String.valueOf(roteiro.getIdRoteiro()),
-                "teste",
-                "teste",
-                "teste",
-                "teste",
-                "teste",
-                "teste"
+                null,
+                bagagem,
+                costumes,
+                moeda,
+                idioma,
+                documentos,
+                clima
         );
 
-        ItinerarioDto roteiroDica = new ItinerarioDto(
-                roteiro,
-                dica
-        );
+        // Criação do objeto ItinerarioDto
+        ItinerarioDto roteiroDica = new ItinerarioDto(roteiro, dica);
+
         return roteiroDica;
     }
 

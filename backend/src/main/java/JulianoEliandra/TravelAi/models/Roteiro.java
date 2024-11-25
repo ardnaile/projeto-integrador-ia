@@ -32,7 +32,7 @@ public class Roteiro {
         this.dt_inicio = dt_inicio;
         this.dt_fim = dt_fim;
     }
-//    public Roteiro(){};
+    public Roteiro(){};
 
     public ObjectId getIdRoteiro() {
         return idRoteiro;
