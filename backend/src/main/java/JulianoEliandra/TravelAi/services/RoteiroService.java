@@ -2,7 +2,7 @@ package JulianoEliandra.TravelAi.services;
 
 import JulianoEliandra.TravelAi.dtos.ItinerarioDto;
 import JulianoEliandra.TravelAi.models.Dica;
-import JulianoEliandra.TravelAi.models.Prompt;
+import JulianoEliandra.TravelAi.models.Input;
 import JulianoEliandra.TravelAi.models.Roteiro;
 import JulianoEliandra.TravelAi.repositories.DicaRepository;
 import JulianoEliandra.TravelAi.repositories.RoteiroRepository;
@@ -11,11 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 public class RoteiroService {
@@ -25,60 +21,8 @@ public class RoteiroService {
     @Autowired
     DicaRepository dicaRepository;
 
-    @Autowired
-    DocumentoService documentoService;
+    public ItinerarioDto gerarRoteiroDica(String prompt, Date dt_inicio, Date dt_fim){
 
-    @Autowired
-    EmailService emailService;
-
-    // Validar prompt
-
-    public Prompt validarPrompt(Prompt prompt) {
-        Prompt promptValidado = new Prompt();
-
-        // Verifica cada campo e mantém os que estiverem preenchidos
-
-        if (prompt.getTitulo() != null && !prompt.getTitulo().isEmpty()) {
-            promptValidado.setTitulo(prompt.getTitulo());
-        }
-        if (prompt.getDestino() != null && !prompt.getDestino().isEmpty()) {
-            promptValidado.setDestino(prompt.getDestino());
-        }
-        if (prompt.getAtividades() != null && !prompt.getAtividades().isEmpty()) {
-            promptValidado.setAtividades(prompt.getAtividades());
-        }
-        if (prompt.getAcomodacao() != null && !prompt.getAcomodacao().isEmpty()) {
-            promptValidado.setAcomodacao(prompt.getAcomodacao());
-        }
-        if (prompt.getTransporte() != null && !prompt.getTransporte().isEmpty()) {
-            promptValidado.setTransporte(prompt.getTransporte());
-        }
-        if (prompt.getGastronomia() != null && !prompt.getGastronomia().isEmpty()) {
-            promptValidado.setGastronomia(prompt.getGastronomia());
-        }
-        if (prompt.getOrcamento() != null && !prompt.getOrcamento().isEmpty()) {
-            promptValidado.setOrcamento(prompt.getOrcamento());
-        }
-
-
-        // Validação das datas
-
-        if (prompt.getDt_inicio() == null) {
-            throw new IllegalArgumentException("A data de início não pode ser nula.");
-        }
-        if (prompt.getDt_fim() == null) {
-            throw new IllegalArgumentException("A data de fim não pode ser nula.");
-        }
-
-        return promptValidado;
-    }
-
-    public ItinerarioDto gerarRoteiroDica(Prompt prompt){
-        // monta o payload para a api do chatgpt
-
-        // faz a chamada para a api
-
-        // parse da resposta json para objeto java
         Roteiro roteiro = new Roteiro(
                 "Padrão",
                 "Padrão",
@@ -87,9 +31,8 @@ public class RoteiroService {
                 "Padrão",
                 "Padrão",
                 "Padrão",
-                prompt.getDt_inicio(),
-                prompt.getDt_fim(),
-                prompt.getIdPrompt().toString()
+                dt_inicio,
+                dt_fim
         );
 
         Dica dica = new Dica(

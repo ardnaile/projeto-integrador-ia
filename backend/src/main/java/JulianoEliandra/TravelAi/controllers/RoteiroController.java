@@ -3,12 +3,13 @@ package JulianoEliandra.TravelAi.controllers;
 import JulianoEliandra.TravelAi.dtos.ItinerarioDto;
 import JulianoEliandra.TravelAi.dtos.EmailDto;
 import JulianoEliandra.TravelAi.models.Dica;
-import JulianoEliandra.TravelAi.models.Prompt;
+import JulianoEliandra.TravelAi.models.Input;
 import JulianoEliandra.TravelAi.models.Roteiro;
 import JulianoEliandra.TravelAi.repositories.DicaRepository;
 import JulianoEliandra.TravelAi.repositories.RoteiroRepository;
 import JulianoEliandra.TravelAi.services.DocumentoService;
 import JulianoEliandra.TravelAi.services.EmailService;
+import JulianoEliandra.TravelAi.services.PromptService;
 import JulianoEliandra.TravelAi.services.RoteiroService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -39,12 +41,20 @@ public class RoteiroController {
     @Autowired
     private DicaRepository dicaRepository;
 
-    @PostMapping("")
-    public ResponseEntity<?> gerarRoteiro(@RequestBody Prompt prompt){
-        try {
-            Prompt promptValidado = roteiroService.validarPrompt(prompt);
+    @Autowired
+    private PromptService promptService;
 
-            ItinerarioDto novoRoteiroDica = roteiroService.gerarRoteiroDica(promptValidado);
+    @PostMapping("")
+    public ResponseEntity<?> gerarRoteiro(@RequestBody Input input){
+        try {
+            String inputValidado = promptService.validarInput(input);
+
+            String prompt = promptService.buildPrompt(inputValidado);
+
+            Date dt_inicio = input.getDt_inicio();
+            Date dt_fim = input.getDt_fim();
+
+            ItinerarioDto novoRoteiroDica = roteiroService.gerarRoteiroDica(prompt, dt_inicio, dt_fim);
 
             ItinerarioDto itinerarioDto = roteiroService.salvarRoteiroDica(novoRoteiroDica);
             
