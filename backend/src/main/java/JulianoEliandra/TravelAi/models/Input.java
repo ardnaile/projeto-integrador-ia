@@ -1,15 +1,9 @@
 package JulianoEliandra.TravelAi.models;
 
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.Date;
 
-@Document(collection = "Prompt")
-public class Prompt {
-    @MongoId
-    private ObjectId idPrompt;
+public class Input {
     private String destino;
     private String atividades;
     private String acomodacao;
@@ -20,28 +14,7 @@ public class Prompt {
     private Date dt_inicio;
     private Date dt_fim;
 
-
-//    public Prompt(ObjectId idPrompt, String destino, String atividades, String acomodacao, String transporte, String gastronomia, String orcamento, Date dt_inicio, Date dt_fim) {
-//        this.idPrompt = idPrompt;
-//        this.destino = destino;
-//        this.atividades = atividades;
-//        this.acomodacao = acomodacao;
-//        this.transporte = transporte;
-//        this.gastronomia = gastronomia;
-//        this.orcamento = orcamento;
-//        this.dt_inicio = dt_inicio;
-//        this.dt_fim = dt_fim;
-//    }
-
-    public Prompt(){}
-
-    public ObjectId getIdPrompt() {
-        return idPrompt;
-    }
-
-    public void setIdPrompt(ObjectId idPrompt) {
-        this.idPrompt = idPrompt;
-    }
+    public Input(){}
 
     public String getDestino() {
         return destino;
