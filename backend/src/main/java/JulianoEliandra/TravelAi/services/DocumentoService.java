@@ -37,7 +37,6 @@ public class DocumentoService {
             // Adicionar informações da Dica
             document.add(new Paragraph("Dicas de Viagem"));
             document.add(new Paragraph("Bagagem: " + dica.getBagagem()));
-            document.add(new Paragraph("Saúde: " + dica.getSaude()));
             document.add(new Paragraph("Costumes: " + dica.getCostumes()));
             document.add(new Paragraph("Moeda: " + dica.getMoeda()));
             document.add(new Paragraph("Idioma: " + dica.getIdioma()));
