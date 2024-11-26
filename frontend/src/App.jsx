@@ -3,8 +3,10 @@ import { FaUserCircle } from 'react-icons/fa';
 import Roteiros from './pages/Roteiros';
 import Sobre from './pages/Sobre';
 import Calendario from './pages/Calendario';
+import Login from './pages/Login'; // Importando a página de login
 
 const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Estado para controle de login
   const [activePage, setActivePage] = useState('roteiros');
 
   const renderPage = () => {
@@ -19,6 +21,11 @@ const App = () => {
         return <Roteiros />;
     }
   };
+
+  // Verificar se o usuário não está logado e exibir a página de login
+  if (!isLoggedIn) {
+    return <Login onLogin={() => setIsLoggedIn(true)} />; // Passa o callback para autenticar
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
