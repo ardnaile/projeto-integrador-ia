@@ -7,10 +7,7 @@ import JulianoEliandra.TravelAi.models.Input;
 import JulianoEliandra.TravelAi.models.Roteiro;
 import JulianoEliandra.TravelAi.repositories.DicaRepository;
 import JulianoEliandra.TravelAi.repositories.RoteiroRepository;
-import JulianoEliandra.TravelAi.services.DocumentoService;
-import JulianoEliandra.TravelAi.services.EmailService;
-import JulianoEliandra.TravelAi.services.PromptService;
-import JulianoEliandra.TravelAi.services.RoteiroService;
+import JulianoEliandra.TravelAi.services.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +41,9 @@ public class RoteiroController {
     @Autowired
     private PromptService promptService;
 
+    @Autowired
+    private ChatGPTService chatGPTService;
+
     @PostMapping("")
     public ResponseEntity<?> gerarRoteiro(@RequestBody Input input){
         try {
@@ -51,14 +51,13 @@ public class RoteiroController {
 
             String prompt = promptService.buildPrompt(inputValidado);
 
-            Date dt_inicio = input.getDt_inicio();
-            Date dt_fim = input.getDt_fim();
+            String resposta = chatGPTService.getChatResponse(prompt);
 
-            ItinerarioDto novoRoteiroDica = roteiroService.gerarRoteiroDica(prompt, dt_inicio, dt_fim);
+            ItinerarioDto roteiroDica = roteiroService.gerarRoteiroDica(resposta, input.getDt_inicio(), input.getDt_fim());
 
-            ItinerarioDto itinerarioDto = roteiroService.salvarRoteiroDica(novoRoteiroDica);
+            ItinerarioDto roteiroDicaSalvo = roteiroService.salvarRoteiroDica(roteiroDica);
             
-            return ResponseEntity.ok(itinerarioDto);
+            return ResponseEntity.ok(roteiroDicaSalvo);
 
         } catch (Exception e){
             return ResponseEntity.status(500).body("Erro ao gerar roteiro " + e.getMessage());

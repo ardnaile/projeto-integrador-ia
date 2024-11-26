@@ -2,12 +2,10 @@ package JulianoEliandra.TravelAi.controllers;
 
 import JulianoEliandra.TravelAi.dtos.ItinerarioDto;
 import JulianoEliandra.TravelAi.models.Input;
-import JulianoEliandra.TravelAi.models.Roteiro;
 import JulianoEliandra.TravelAi.services.ChatGPTService;
 import JulianoEliandra.TravelAi.services.PromptService;
 import JulianoEliandra.TravelAi.services.RoteiroService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,5 +39,4 @@ public class TestController {
             return ResponseEntity.status(500).body("Erro" + e.getMessage());
         }
     }
-
 }
