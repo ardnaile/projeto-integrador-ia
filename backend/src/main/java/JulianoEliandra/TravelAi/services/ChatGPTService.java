@@ -26,7 +26,7 @@ public class ChatGPTService {
 
 
     public String getChatResponse(String message) throws Exception {
-        System.out.println(apiKey);
+//        System.out.println(apiKey);
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost request = new HttpPost(OPENAI_URL);
             request.setHeader("Authorization", "Bearer " + apiKey);
