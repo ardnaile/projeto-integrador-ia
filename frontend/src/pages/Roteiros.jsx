@@ -1,40 +1,29 @@
 import React, { useState } from "react";
-import ModalAdicionarRoteiro from "../components/ModalAdicionarRoteiro"; // Importe o modal criado acima
+import ModalAdicionarRoteiro from "../components/ModalAdicionarRoteiro";
 
 const Roteiros = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [roteiros, setRoteiros] = useState([]); // Inicializa o estado para armazenar os roteiros
+  const [roteiros, setRoteiros] = useState([]);
+  const [error, setError] = useState("");
 
   const handleAddRoteiro = async (novoRoteiro) => {
+    setError(""); // Limpa erros anteriores
     try {
-      const response = await fetch("http://localhost:8080/roteiro/gerar", {
+      const response = await fetch("http://localhost:8080/roteiros", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          destino: novoRoteiro.destino,
-          atividades: novoRoteiro.atividades,
-          acomodacao: novoRoteiro.acomodacao,
-          transporte: novoRoteiro.transporte,
-          gastronomia: novoRoteiro.gastronomia,
-          orcamento: novoRoteiro.orcamento,
-          dt_inicio: novoRoteiro.dt_inicio,
-          dt_fim: novoRoteiro.dt_fim,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(novoRoteiro),
       });
-  
+
       if (!response.ok) {
-        throw new Error(`Erro HTTP: ${response.status}`);
+        throw new Error(`Erro ao adicionar o roteiro: ${response.status}`);
       }
-  
+
       const data = await response.json();
-      console.log("Roteiro gerado com sucesso:", data);
-  
-      // Atualiza o estado local com o novo roteiro
-      setRoteiros((prevRoteiros) => [...prevRoteiros, data]);
+      setRoteiros((prevRoteiros) => [...prevRoteiros, data]); // Atualiza a lista de roteiros
+      setIsModalOpen(false); // Fecha o modal após sucesso
     } catch (error) {
-      console.error("Erro ao gerar o roteiro:", error.message);
+      setError(error.message);
     }
   };
 
@@ -47,6 +36,9 @@ const Roteiros = () => {
       >
         Adicionar Roteiro
       </button>
+
+      {/* Exibição de erros */}
+      {error && <p className="text-red-500 mt-4">{error}</p>}
 
       {/* Modal para adicionar roteiro */}
       <ModalAdicionarRoteiro
@@ -64,33 +56,14 @@ const Roteiros = () => {
                 key={index}
                 className="bg-gray-100 p-4 rounded shadow border border-gray-300"
               >
-                <p>
-                  <strong>Destino:</strong> {roteiro.destino}
-                </p>
-                <p>
-                  <strong>Atividades:</strong> {roteiro.atividades}
-                </p>
-                <p>
-                  <strong>Acomodação:</strong> {roteiro.acomodacao}
-                </p>
-                <p>
-                  <strong>Data de Início:</strong> {roteiro.dt_inicio}
-                </p>
-                <p>
-                  <strong>Data de Fim:</strong> {roteiro.dt_fim}
-                </p>
-                <p>
-                  <strong>Transporte:</strong>{" "}
-                  {roteiro.transporte || "Não especificado"}
-                </p>
-                <p>
-                  <strong>Gastronomia:</strong>{" "}
-                  {roteiro.gastronomia || "Não especificada"}
-                </p>
-                <p>
-                  <strong>Orçamento:</strong>{" "}
-                  {roteiro.orcamento || "Não especificado"}
-                </p>
+                <p><strong>Destino:</strong> {roteiro.destino}</p>
+                <p><strong>Atividades:</strong> {roteiro.atividades}</p>
+                <p><strong>Acomodação:</strong> {roteiro.acomodacao}</p>
+                <p><strong>Data de Início:</strong> {roteiro.dt_inicio}</p>
+                <p><strong>Data de Fim:</strong> {roteiro.dt_fim}</p>
+                <p><strong>Transporte:</strong> {roteiro.transporte || "Não especificado"}</p>
+                <p><strong>Gastronomia:</strong> {roteiro.gastronomia || "Não especificada"}</p>
+                <p><strong>Orçamento:</strong> {roteiro.orcamento || "Não especificado"}</p>
               </li>
             ))}
           </ul>
