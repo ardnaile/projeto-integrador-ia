@@ -51,7 +51,7 @@ public class PromptService {
 
     public String buildPrompt(String input) throws Exception {
         String prompt = "Crie um objeto JSON com as chaves 'roteiro' (incluindo apenas titulo, destino, atividades, acomodacao, transporte e gastronomia) " +
-                "e 'dicas' (incluindo apenas bagagem, costumes, moedas, idioma, documentos e clima) sem hierarquia interna. Considere: " + input;
+                "e 'dicas' (incluindo apenas bagagem, costumes, moedas, idioma, documentos e clima) sem hierarquia interna e listas. Considere: " + input;
 
         // Concatenar o prompt com o JSON do usuário
         return prompt;

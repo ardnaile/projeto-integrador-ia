@@ -1,11 +1,9 @@
 package JulianoEliandra.TravelAi.controllers;
 
-import JulianoEliandra.TravelAi.dtos.ItinerarioDto;
 import JulianoEliandra.TravelAi.dtos.LoginDto;
 import JulianoEliandra.TravelAi.dtos.RegistroUsuarioDto;
 import JulianoEliandra.TravelAi.mappers.UsuarioMapper;
 import JulianoEliandra.TravelAi.models.Agencia;
-import JulianoEliandra.TravelAi.models.Roteiro;
 import JulianoEliandra.TravelAi.models.Usuario;
 import JulianoEliandra.TravelAi.repositories.AgenciaRepository;
 import JulianoEliandra.TravelAi.services.UsuarioService;
@@ -14,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/")
