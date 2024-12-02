@@ -90,12 +90,12 @@ ok: Login successful!
 unauthorized: Invalid credentials
 
 ### `POST` /roteiros
-Gera um roteiro e dicas com base em inputs coleados do Front-end. Posteriormente, será gerado com IA. O usuário pode deixar os inputs em branco, caso queira. Os únicos campos que são obrigatórios são as datas:
+A IA gera um roteiro e dicas com base em inputs coletados do Front-end. O usuário pode deixar os inputs em branco, caso queira. Os únicos campos que são obrigatórios são as datas:
 
 Body:
 ```
 {
-	"titulo": "TESTE",
+	"destino": "Paris",
   	"dt_inicio": "2024-11-01T00:00:00Z",
 	"dt_fim": "2024-11-01T00:00:00Z"
 }

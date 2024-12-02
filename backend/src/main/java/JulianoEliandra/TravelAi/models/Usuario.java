@@ -4,8 +4,6 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.util.UUID;
-
 @Document(collection = "Usuario")
 public class Usuario {
     @MongoId
