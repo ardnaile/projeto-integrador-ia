@@ -10,7 +10,9 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry){
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000") // URL do seu front-end React
-                .allowedMethods("GET", "POST", "DELETE", "PATCH");
+                .allowedMethods("GET", "POST", "DELETE", "PATCH")
+                .allowedHeaders("*"); // Permite todos os cabeçalhos
+
     }
 }
 

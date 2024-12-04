@@ -44,8 +44,8 @@ public class RoteiroController {
     @Autowired
     private ChatGPTService chatGPTService;
 
-    @PostMapping("")
-    public ResponseEntity<?> gerarRoteiro(@RequestBody Input input){
+    @PostMapping("/{idUsuario}")
+    public ResponseEntity<?> gerarRoteiro(@RequestBody Input input, @PathVariable ObjectId idUsuario){
         try {
             String inputValidado = promptService.validarInput(input);
 
@@ -54,6 +54,7 @@ public class RoteiroController {
             String resposta = chatGPTService.getChatResponse(prompt);
 
             ItinerarioDto roteiroDica = roteiroService.gerarRoteiroDica(resposta, input.getDt_inicio(), input.getDt_fim());
+            roteiroDica.roteiro().setIdUsuario(idUsuario.toString());
 
             ItinerarioDto roteiroDicaSalvo = roteiroService.salvarRoteiroDica(roteiroDica);
             
