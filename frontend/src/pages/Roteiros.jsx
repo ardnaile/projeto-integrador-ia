@@ -8,24 +8,33 @@ const Roteiros = () => {
 
   const handleAddRoteiro = async (novoRoteiro) => {
     setError(""); // Limpa erros anteriores
+  
     try {
       const response = await fetch("http://localhost:8080/roteiros", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(novoRoteiro),
+        body: JSON.stringify({ input: novoRoteiro }),
       });
-
+  
       if (!response.ok) {
-        throw new Error(`Erro ao adicionar o roteiro: ${response.status}`);
+        throw new Error("Erro ao processar o roteiro: " + response.status);
       }
-
+  
       const data = await response.json();
-      setRoteiros((prevRoteiros) => [...prevRoteiros, data]); // Atualiza a lista de roteiros
-      setIsModalOpen(false); // Fecha o modal após sucesso
+  
+      // Valida se os dados retornados têm a estrutura esperada
+      if (!data.roteiro || !data.dicas) {
+        throw new Error("Estrutura de dados inesperada do backend.");
+      }
+  
+      setRoteiros((prevRoteiros) => [...prevRoteiros, data]);
+      setIsModalOpen(false);
     } catch (error) {
+      console.error("Erro ao adicionar roteiro:", error.message);
       setError(error.message);
     }
   };
+  
 
   return (
     <div className="p-4">
@@ -51,19 +60,48 @@ const Roteiros = () => {
       <div className="mt-6">
         {roteiros.length > 0 ? (
           <ul className="space-y-4">
-            {roteiros.map((roteiro, index) => (
+            {roteiros.map((roteiroData, index) => (
               <li
                 key={index}
                 className="bg-gray-100 p-4 rounded shadow border border-gray-300"
               >
-                <p><strong>Destino:</strong> {roteiro.destino}</p>
-                <p><strong>Atividades:</strong> {roteiro.atividades}</p>
-                <p><strong>Acomodação:</strong> {roteiro.acomodacao}</p>
-                <p><strong>Data de Início:</strong> {roteiro.dt_inicio}</p>
-                <p><strong>Data de Fim:</strong> {roteiro.dt_fim}</p>
-                <p><strong>Transporte:</strong> {roteiro.transporte || "Não especificado"}</p>
-                <p><strong>Gastronomia:</strong> {roteiro.gastronomia || "Não especificada"}</p>
-                <p><strong>Orçamento:</strong> {roteiro.orcamento || "Não especificado"}</p>
+                <h3 className="font-bold text-lg">Roteiro</h3>
+                <p>
+                  <strong>Destino:</strong> {roteiroData.roteiro.destino}
+                </p>
+                <p>
+                  <strong>Atividades:</strong> {roteiroData.roteiro.atividades}
+                </p>
+                <p>
+                  <strong>Acomodação:</strong> {roteiroData.roteiro.acomodacao}
+                </p>
+                <p>
+                  <strong>Transporte:</strong> {roteiroData.roteiro.transporte}
+                </p>
+                <p>
+                  <strong>Gastronomia:</strong>{" "}
+                  {roteiroData.roteiro.gastronomia}
+                </p>
+
+                <h4 className="font-bold mt-4">Dicas</h4>
+                <p>
+                  <strong>Bagagem:</strong> {roteiroData.dicas.bagagem}
+                </p>
+                <p>
+                  <strong>Costumes:</strong> {roteiroData.dicas.costumes}
+                </p>
+                <p>
+                  <strong>Moedas:</strong> {roteiroData.dicas.moedas}
+                </p>
+                <p>
+                  <strong>Idioma:</strong> {roteiroData.dicas.idioma}
+                </p>
+                <p>
+                  <strong>Documentos:</strong> {roteiroData.dicas.documentos}
+                </p>
+                <p>
+                  <strong>Clima:</strong> {roteiroData.dicas.clima}
+                </p>
               </li>
             ))}
           </ul>
