@@ -1,23 +1,38 @@
 import React, { useState } from 'react';
 
 const Login = ({ onLogin }) => {
-  // Estados para email e senha digitados pelo usuário
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  // Credenciais fixas
-  const validEmail = 'admin@gmail.com';
-  const validPassword = '1234';
-
-  const handleLogin = () => {
-    // Verifica se as credenciais estão corretas
-    if (email === validEmail && password === validPassword) {
-      onLogin(); // Loga o usuário
-    } else {
-      setError('Email ou senha incorretos!'); // Exibe uma mensagem de erro
+  const handleLogin = async () => {
+    setError(''); // Limpa mensagens de erro
+  
+    try {
+      const response = await fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nomeUsuario: email, 
+          senha: password,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Erro ao fazer login: ' + response.status);
+      }
+  
+      const userId = await response.text(); // Lê a resposta como texto
+      console.log('ID do usuário recebido:', userId);
+  
+      // Armazena o ID do usuário para uso futuro
+      onLogin(userId);
+    } catch (error) {
+      console.error(error.message);
+      setError(error.message);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
@@ -52,7 +67,7 @@ const Login = ({ onLogin }) => {
           </div>
           <button
             type="button"
-            onClick={handleLogin} // Valida o login ao clicar
+            onClick={handleLogin} // Faz login via API
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
           >
             Entrar
