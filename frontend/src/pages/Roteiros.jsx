@@ -97,11 +97,10 @@ const Roteiros = () => {
       setIsModalOpen(false);
     } catch (error) {
       console.error("Erro ao adicionar roteiro:", error.message);
-      setError(error.message);
+      setError(error.message); // Exibe o erro no frontend
     }
   };
   
-
   // Função para enviar o e-mail com base no roteiro selecionado
   const handleEnviarEmail = async (emailData) => {
     try {

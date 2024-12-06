@@ -10,7 +10,6 @@ public class Input {
     private String transporte;
     private String gastronomia;
     private String orcamento;
-
     private Date dt_inicio;
     private Date dt_fim;
 
