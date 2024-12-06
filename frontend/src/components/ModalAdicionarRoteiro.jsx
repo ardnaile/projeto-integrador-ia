@@ -30,13 +30,6 @@ const ModalAdicionarRoteiro = ({ isOpen, onClose, onAdd }) => {
 
   const validateForm = () => {
     const newErrors = {};
-
-    fields.forEach(({ name, label, optional }) => {
-      if (!formData[name] && !optional) {
-        newErrors[name] = `${label} é obrigatório(a).`;
-      }
-    });
-
     if (!formData.dt_inicio) newErrors.dt_inicio = "A data de início é obrigatória.";
     if (!formData.dt_fim) newErrors.dt_fim = "A data de fim é obrigatória.";
 
