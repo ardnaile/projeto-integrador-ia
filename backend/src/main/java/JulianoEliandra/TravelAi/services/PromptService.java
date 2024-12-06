@@ -30,7 +30,7 @@ public class PromptService {
             inputValidado += "gastronomia: " + input.getGastronomia() + ",";
         }
         if (input.getOrcamento() != null && !input.getOrcamento().isEmpty()) {
-            inputValidado += "orçamento: " + input.getOrcamento() + ",";
+            inputValidado += "orcamento: " + input.getOrcamento() + ",";
         }
 
         // Validação das datas
