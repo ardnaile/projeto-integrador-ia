@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ModalAdicionarRoteiro from "../components/ModalAdicionarRoteiro";
+import { salvarRoteiro } from "../api/apiGPT";
 
 const Roteiros = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -8,62 +9,16 @@ const Roteiros = () => {
 
   const handleAddRoteiro = async (novoRoteiro) => {
     setError(""); // Limpa erros anteriores
-  
+
     try {
-      const response = await fetch("http://localhost:8080/roteiros", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          "destino": "Paris",
-          "atividades": "Museus",
-          "acomodacao": "airbnb",
-          "transporte": "trem",
-          "gastronomia": "Comidas típicas",
-          "orçamento": "No máximo 10 mil reais",
-          "dt_inicio": "2024-12-01T00:00:00Z",
-          "dt_fim": "2024-12-20T00:00:00Z"
-        }),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Erro ao processar o roteiro: " + response.status);
-      }
-  
-      const data = await response.json();
-  
-      // Valida se os dados retornados têm a estrutura esperada
-      if (!data.roteiro || !data.dica) {
-        throw new Error("Estrutura de dados inesperada do backend.");
-      }
-  
-      // Mapeia os dados do backend para o formato usado no frontend
-      const roteiroFormatado = {
-        roteiro: {
-          destino: data.roteiro.destino,
-          atividades: data.roteiro.atividades,
-          acomodacao: data.roteiro.acomodacao,
-          transporte: data.roteiro.transporte,
-          gastronomia: data.roteiro.gastronomia,
-        },
-        dicas: {
-          bagagem: data.dica.bagagem,
-          costumes: data.dica.costumes,
-          moedas: data.dica.moeda, // Verifique a chave correta no JSON
-          idioma: data.dica.idioma,
-          documentos: data.dica.documentos,
-          clima: data.dica.clima,
-        },
-      };
-  
+      const roteiroFormatado = await salvarRoteiro(novoRoteiro);
       setRoteiros((prevRoteiros) => [...prevRoteiros, roteiroFormatado]);
-      setIsModalOpen(false);
+      setIsModalOpen(false); // Fecha o modal ao concluir
     } catch (error) {
       console.error("Erro ao adicionar roteiro:", error.message);
-      setError(error.message);
+      setError(error.message); // Exibe o erro no frontend
     }
   };
-  
-  
 
   return (
     <div className="p-4">
