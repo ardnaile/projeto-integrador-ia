@@ -7,32 +7,34 @@ const Login = ({ onLogin }) => {
 
   const handleLogin = async () => {
     setError(''); // Limpa mensagens de erro
-  
+
     try {
       const response = await fetch('http://localhost:8080/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nomeUsuario: email, 
+          nomeUsuario: email,
           senha: password,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Erro ao fazer login: ' + response.status);
       }
-  
-      const userId = await response.text(); // Lê a resposta como texto
-      console.log('ID do usuário recebido:', userId);
-  
-      // Armazena o ID do usuário para uso futuro
-      onLogin(userId);
+
+      const idUsuario = await response.text(); // Lê a resposta como texto
+      console.log('ID do usuário recebido:', idUsuario);
+
+      // Salva o ID do usuário no localStorage
+      localStorage.setItem('idUsuario', idUsuario);
+
+      // Chama a função onLogin passada por props para ações adicionais
+      onLogin(idUsuario);
     } catch (error) {
       console.error(error.message);
       setError(error.message);
     }
   };
-  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
