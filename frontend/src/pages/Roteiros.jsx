@@ -14,14 +14,14 @@ const Roteiros = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          "destino": "Paris",
-          "atividades": "Museus",
-          "acomodacao": "airbnb",
-          "transporte": "trem",
-          "gastronomia": "Comidas típicas",
-          "orçamento": "No máximo 10 mil reais",
-          "dt_inicio": "2024-12-01T00:00:00Z",
-          "dt_fim": "2024-12-20T00:00:00Z"
+          destino: novoRoteiro.destino,
+          atividades: novoRoteiro.atividades,
+          acomodacao: novoRoteiro.acomodacao,
+          transporte: novoRoteiro.transporte,
+          gastronomia: novoRoteiro.gastronomia,
+          orcamento: novoRoteiro.orcamento,
+          dt_inicio: novoRoteiro.dt_inicio,
+          dt_fim: novoRoteiro.dt_fim,
         }),
       });
   
